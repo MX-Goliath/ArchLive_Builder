@@ -37,8 +37,9 @@ This project is a script for automatically creating Arch Linux Live images. The 
 - [ ] Creating regular and engineering releases.
 - [ ] Adding packages from AUR.
 - [ ] Ability to automatically copy all or some user files.
-- [ ] Normal GUI (Is it needed???)
-
+- [ ] Normal GUI (Is it needed???).
+- [ ] Adding an installer for a full system transfer from the ISO to the PC.
+- [ ] Adding the option to select locales
 
 If you have any questions or suggestions for improving the project, you can create an issue in the repository or contact me via email.
 
