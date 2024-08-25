@@ -29,7 +29,16 @@ This project is a script for automatically creating Arch Linux Live images. The 
 - Installed Arch Linux.
 - root privileges to run the script.
 
-## Support
+## Future Plans:
 
-If you have any questions or suggestions for improving the project, you can create an issue in the repository or contact the developers directly.
+- [ ] Add support for selecting different desktop environments.
+- [ ] Improve the command-line interface for better user interaction.
+- [ ] Clearing previous builds.
+- [ ] Creating regular and engineering releases.
+- [ ] Adding packages from AUR.
+- [ ] Ability to automatically copy all or some user files.
+- [ ] Normal GUI (Is it needed???)
+
+
+If you have any questions or suggestions for improving the project, you can create an issue in the repository or contact me via email.
 
