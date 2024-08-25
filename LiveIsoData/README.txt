@@ -1,0 +1,1 @@
+Place your local files and configuration files in this folder. In the final ISO image, they will be located in the same directory as they are here. That is, configuration files should be placed in the .conf/... folder, and so on.
