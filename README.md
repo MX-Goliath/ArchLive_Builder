@@ -43,3 +43,14 @@ This project is a script for automatically creating Arch Linux Live images. The 
 
 If you have any questions or suggestions for improving the project, you can create an issue in the repository or contact me via email.
 
+## Version history
+### V0.2
+
+**Added:**
+- Clean-up of previous builds
+- Automatic copying of all files
+- Option to select locales
+- ISO file is now automatically moved to the releases folder
+
+The user is now prompted before creating the image.
+Added locales file
