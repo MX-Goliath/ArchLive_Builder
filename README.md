@@ -13,6 +13,8 @@ This project is a script for automatically creating Arch Linux Live images. The 
 - `packages`: A file containing the base list of packages to be included in the image.
 - `LiveIsoData`: A folder where users can place their files, which will then be available in the `home` directory of the created image. You can also place configuration files here, such as KDE environment settings, which will be automatically applied when the image is booted.
 - `locales.txt`: File with a list of locales.
+- `credentials.sh` - function for setting root user password and regular user login and password.
+- `selectindgenv.sh` - function to select graphical environment.
 
 ## Installation and Usage
 
