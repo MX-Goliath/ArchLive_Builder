@@ -68,4 +68,5 @@ Added locales file
 ### V0.3
 **Added:**
 - Added the ability to select a graphical environment from: KDE Plasma, GNOME, XFCE(testing), Deepin(testing), Hyperland(testing)
-- Some functions have been moved to separate files to improve code readability and simplify work 
+- Some functions have been moved to separate files to improve code readability and simplify work
+- For now, sddm has been selected as the default manager(In future releases, different managers will be added for different graphical environments)
