@@ -24,6 +24,9 @@ This project is a script for automatically creating Arch Linux Live images. The 
 ```bash
 ./ArchLive_Builder_En.sh
 ```
+## Note
+**! It is highly recommended not to interrupt the process of directly building the ISO image, as this may result in files that are not deleted under sudo** 
+
 
 ## Requirements
 
