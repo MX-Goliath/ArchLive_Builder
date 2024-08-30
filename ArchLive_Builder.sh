@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# Function to get a yes/no response
+######################################################################################################################
+source ./credentials.sh
+source ./selectindgenv.sh
+
+
+
+######################################################################################################################
 get_yes_no() {
     while true; do
         read -p "$1 (y/n): " yn
@@ -12,22 +18,6 @@ get_yes_no() {
     done
 }
 
-# Function to get a password with confirmation
-get_password() {
-    while true; do
-        read -s -p "$1: " password
-        echo
-        read -s -p "Confirm $1: " password_confirm
-        if [ "$password" = "$password_confirm" ]; then
-            echo "$password"
-            return
-        else
-            echo "Passwords do not match. Please try again."
-        fi
-    done
-}
-
-# Function to move ISO to the releases folder
 move_iso_to_releases() {
     local iso_path="$1"
     local releases_dir="releases"
@@ -35,10 +25,8 @@ move_iso_to_releases() {
     local new_path="$releases_dir/$iso_name"
     local counter=1
 
-    # Create releases folder if it does not exist
     mkdir -p "$releases_dir"
 
-    # Check if a file with the same name already exists
     while [ -f "$new_path" ]; do
         new_path="${releases_dir}/${iso_name%.*}_${counter}.${iso_name##*.}"
         ((counter++))
@@ -49,10 +37,12 @@ move_iso_to_releases() {
     echo "ISO image moved to: $new_path"
 }
 
-# Install archiso
-sudo pacman -S --noconfirm archiso
 
-# Check and remove archlive folder
+
+######################################################################################################################
+command -v mkarchiso >/dev/null 2>&1 || { echo >&2 "mkarchiso не установлен. Устанавливаю..."; sudo pacman -S --noconfirm archiso; }
+
+
 if [ -d "archlive" ]; then
     echo "archlive folder found, removing..."
     sudo rm -rf archlive
@@ -61,10 +51,8 @@ else
     echo "archlive folder does not exist."
 fi
 
-# Copy releng configuration
 cp -r /usr/share/archiso/configs/releng/ archlive
 
-# Copy folders from home directory
 if get_yes_no "Do you want to copy all folders from the user's home directory, including hidden ones, to archlive/airootfs/etc/skel/?"; then
     SCRIPT_DIR="$(dirname "$(realpath "$0")")"
     shopt -s dotglob
@@ -113,56 +101,35 @@ while true; do
     fi
 done
 
-# Copy LiveIsoData files
-cp -r LiveIsoData/. archlive/airootfs/etc/skel/
 
-# Get user data
-root_password=$(get_password "Enter password for root")
-echo
-read -p "Enter the username: " username
-echo
-user_password=$(get_password "Enter password for user")
-echo
+select_desltop_env
 
-add_sudo=$(get_yes_no "Do you want to add user $username to sudoers?")
+# Копирование файлов LiveIsoData
+if [ -d "LiveIsoData" ]; then
+    cp -r LiveIsoData/. archlive/airootfs/etc/skel/
+else
+    echo "Папка LiveIsoData не найдена, пропускаю копирование."
+fi
 
-# Get the wallpaper path
-# while true; do
-#     read -p "Enter the full path to the wallpaper image (leave blank for default wallpaper): " wallpaper_path
-#     wallpaper_path="${wallpaper_path//\"/}"
-#     if [ -z "$wallpaper_path" ] || [ -f "$wallpaper_path" ]; then
-#         break
-#     else
-#         echo "Image file not found. Please check the path and try again."
-#     fi
-# done
 
-# Configure wallpaper
-# if [ -n "$wallpaper_path" ]; then
-#     cp "$wallpaper_path" archlive/airootfs/etc/skel/Pictures/
-#     wallpaper_filename=$(basename "$wallpaper_path")
-#     cat <<EOF > archlive/airootfs/etc/skel/.config/plasma-org.kde.plasma.desktop-appletsrc
-# [Containments][1]
-# activityId=
-# formfactor=0
-# immutability=1
-# lastScreen=0
-# location=0
-# plugin=org.kde.desktopcontainment
-# wallpaperplugin=org.kde.image
-#
-# [Containments][1][Wallpaper][org.kde.image][General]
-# Image="file:///home/$username/Pictures/$wallpaper_filename"
-# EOF
-# fi
+get_user_credentials
+# echo "Username: $username"
+# echo "Root password: $root_password"
+# echo "User password: $password"
 
-# Create customize_airootfs.sh script
+echo "Do you want to add the user $username to sudoers? (y/n)"
+read -r add_sudo
+
+
 cat <<EOF > archlive/airootfs/root/customize_airootfs.sh
 #!/bin/bash
 
+
 echo "root:$root_password" | chpasswd
+
+
 useradd -m -G wheel -s /bin/bash $username
-echo "$username:$user_password" | chpasswd
+echo "$username:$password" | chpasswd
 
 EOF
 
