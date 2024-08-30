@@ -59,5 +59,13 @@ If you have any questions or suggestions for improving the project, you can crea
 - Option to select locales
 - ISO file is now automatically moved to the releases folder
 
+**Deleted:**
+- Ability to select wallpaper files
+
 The user is now prompted before creating the image.
 Added locales file
+
+### V0.3
+**Added:**
+- Added the ability to select a graphical environment from: KDE Plasma, GNOME, XFCE(testing), Deepin(testing), Hyperland(testing)
+- Some functions have been moved to separate files to improve code readability and simplify work 
