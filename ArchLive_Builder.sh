@@ -33,7 +33,7 @@ move_iso_to_releases() {
     done
 
     # Move the file
-    mv "$iso_path" "$new_path"
+    sudo mv "$iso_path" "$new_path"
     echo "ISO image moved to: $new_path"
 }
 
