@@ -21,11 +21,11 @@ This project is a script for automatically creating Arch Linux Live images. The 
 3. Add any necessary files and configurations to the `LiveIsoData` folder. Place your local files and configuration files in this folder. In the final ISO image, they will be located in the same directory as they are here. That is, configuration files should be placed in the .conf/... folder, and so on.
 5. Wait for the process to complete and retrieve the ready-to-use Arch Linux Live image.
 ```bash
-chmod +x credentials.sh selectindgenv.sh ArchLive_Builder_En.sh
+chmod +x credentials.sh selectindgenv.sh ArchLive_Builder.sh
 ```
 
 ```bash
-./ArchLive_Builder_En.sh
+./ArchLive_Builder.sh
 ```
 ## Note
 **! It is highly recommended not to interrupt the process of directly building the ISO image, as this may result in files that are not deleted under sudo** 
