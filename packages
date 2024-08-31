@@ -51,7 +51,6 @@ less
 lftp
 libfido2
 libusb-compat
-linux
 linux-atm
 linux-firmware
 linux-firmware-marvell
@@ -169,4 +168,4 @@ lib32-pipewire
 python
 python3
 python-pip
-sddm
+
