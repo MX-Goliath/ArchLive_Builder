@@ -1,7 +1,6 @@
 # selectindgenv.sh
 
 select_desltop_env() {
-# Выбор окружения рабочего стола
 echo "Select the desktop environment:"
 options=("KDE Plasma" "GNOME" "XFCE" "Deepin" "Hyperland")
 select opt in "${options[@]}"; do
