@@ -3,7 +3,7 @@
 ######################################################################################################################
 source ./credentials.sh
 source ./selectindgenv.sh
-
+source ./kernel_select.sh
 
 
 ######################################################################################################################
@@ -17,6 +17,65 @@ get_yes_no() {
         esac
     done
 }
+
+get_yes_no() {
+    while true; do
+        read -p "$1 (y/n): " yn
+        case $yn in
+            [Yy]* ) return 0;;
+            [Nn]* ) return 1;;
+            * ) echo "Please answer y or n.";;
+        esac
+    done
+}
+
+get_copy_option() {
+    while true; do
+        echo "Select the copy option:"
+        echo "1. Copy all files and folders (including hidden ones)"
+        echo "2. Copy only non-hidden files and folders"
+        echo "3. Copy only hidden files and folders"
+        read -p "Enter the number (1/2/3): " option
+        case $option in
+            1 ) return 1;;
+            2 ) return 2;;
+            3 ) return 3;;
+            * ) echo "Please enter 1, 2, or 3.";;
+        esac
+    done
+}
+
+copy_files() {
+    local option=$1
+    SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+
+    if [[ $option -eq 1 ]]; then
+        shopt -s dotglob
+    elif [[ $option -eq 3 ]]; then
+        shopt -s dotglob
+    else
+        shopt -u dotglob
+    fi
+
+    for dir in "$HOME"/*/; do
+        if [[ "$dir" != "$SCRIPT_DIR/"* ]]; then
+            if [[ $option -eq 1 ]]; then
+                sudo cp -r "$dir" "archlive/airootfs/etc/skel/"
+            elif [[ $option -eq 2 && "${dir##*/}" != .* ]]; then
+                sudo cp -r "$dir" "archlive/airootfs/etc/skel/"
+            elif [[ $option -eq 3 && "${dir##*/}" == .* ]]; then
+                sudo cp -r "$dir" "archlive/airootfs/etc/skel/"
+            fi
+        fi
+    done
+
+    if [[ $option -eq 1 || $option -eq 3 ]]; then
+        shopt -u dotglob
+    fi
+    echo "Copying completed."
+}
+
+
 
 move_iso_to_releases() {
     local iso_path="$1"
@@ -40,7 +99,8 @@ move_iso_to_releases() {
 
 
 ######################################################################################################################
-command -v mkarchiso >/dev/null 2>&1 || { echo >&2 "mkarchiso не установлен. Устанавливаю..."; sudo pacman -S --noconfirm archiso; }
+command -v mkarchiso >/dev/null 2>&1 || { echo >&2 "mkarchiso is not installed. Installing..."; sudo pacman -S --noconfirm archiso; }
+sudo pacman -Sc --noconfirm
 
 
 if [ -d "archlive" ]; then
@@ -53,16 +113,10 @@ fi
 
 cp -r /usr/share/archiso/configs/releng/ archlive
 
-if get_yes_no "Do you want to copy all folders from the user's home directory, including hidden ones, to archlive/airootfs/etc/skel/?"; then
-    SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-    shopt -s dotglob
-    for dir in "$HOME"/*/; do
-        if [[ "$dir" != "$SCRIPT_DIR/"* ]]; then
-            cp -r "$dir" "archlive/airootfs/etc/skel/"
-        fi
-    done
-    shopt -u dotglob
-    echo "Copying completed."
+if get_yes_no "Do you want to copy folders from the user's home directory to archlive/airootfs/etc/skel/?"; then
+    get_copy_option
+    option=$?
+    copy_files $option
 else
     echo "Copying canceled by the user."
 fi
@@ -70,6 +124,8 @@ fi
 # Update packages
 > archlive/packages.x86_64
 cat packages >> archlive/packages.x86_64
+
+select_kernel
 
 if get_yes_no "Do you want to add additional packages from the Arch repositories?"; then
     read -p "Enter the package names separated by space: " additional_packages
@@ -108,7 +164,7 @@ select_desltop_env
 if [ -d "LiveIsoData" ]; then
     cp -r LiveIsoData/. archlive/airootfs/etc/skel/
 else
-    echo "Папка LiveIsoData не найдена, пропускаю копирование."
+    echo "LiveIsoData folder not found, skipping copying."
 fi
 
 
@@ -138,11 +194,15 @@ if [ "$add_sudo" = "y" ]; then
     echo "chmod 440 /etc/sudoers.d/99_wheel" >> archlive/airootfs/root/customize_airootfs.sh
 fi
 
-echo "systemctl enable sddm" >> archlive/airootfs/root/customize_airootfs.sh
+# echo "systemctl enable sddm" >> archlive/airootfs/root/customize_airootfs.sh
+echo "systemctl enable $desktop_men" >> archlive/airootfs/root/customize_airootfs.sh
 echo "systemctl enable NetworkManager" >> archlive/airootfs/root/customize_airootfs.sh
-echo "systemctl enable bluetooth.service" >> archlive/airootfs/root/customize_airootfs.sh
+if [[ "$desktop_men" != "deepin" ]]; then
+    echo "systemctl enable bluetooth.service" >> archlive/airootfs/root/customize_airootfs.sh
+fi
 
-chmod +x archlive/airootfs/root/customize_airootfs.sh
+
+# chmod +x archlive/airootfs/root/customize_airootfs.sh
 
 echo "Configuration complete. You can proceed with creating the ISO."
 
