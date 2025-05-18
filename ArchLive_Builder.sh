@@ -195,9 +195,11 @@ if [ "$add_sudo" = "y" ]; then
 fi
 
 # echo "systemctl enable sddm" >> archlive/airootfs/root/customize_airootfs.sh
-echo "systemctl enable $desktop_men" >> archlive/airootfs/root/customize_airootfs.sh
+if [ -n "$display_manager_service" ]; then
+    echo "systemctl enable $display_manager_service" >> archlive/airootfs/root/customize_airootfs.sh
+fi
 echo "systemctl enable NetworkManager" >> archlive/airootfs/root/customize_airootfs.sh
-if [[ "$desktop_men" != "deepin" ]]; then
+if [[ "$desktop_env" != "deepin" ]]; then
     echo "systemctl enable bluetooth.service" >> archlive/airootfs/root/customize_airootfs.sh
 fi
 

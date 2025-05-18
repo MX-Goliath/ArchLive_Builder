@@ -3,10 +3,14 @@
 select_desltop_env() {
 echo "Select the desktop environment:"
 options=("KDE Plasma" "GNOME" "XFCE" "Deepin" "Hyperland")
+desktop_env=""
+display_manager_service=""
+
 select opt in "${options[@]}"; do
     case $opt in
         "KDE Plasma")
             desktop_env="kde"
+            display_manager_service="sddm"
             packages=(
                 "plasma-meta"
                 "konsole"
@@ -15,30 +19,37 @@ select opt in "${options[@]}"; do
                 "ark"
                 "plasma-workspace"
                 "egl-wayland"
+                "sddm"
             )
             break
             ;;
         "GNOME")
             desktop_env="gnome"
+            display_manager_service="gdm"
             packages=(
                 "gnome"
                 "gnome-tweaks"
+                "gdm"
             )
             break
             ;;
         "XFCE")
             desktop_env="xfce"
+            display_manager_service="lightdm"
             packages=(
                 "xfce4"
                 "xfce4-goodies"
                 "pavucontrol"
                 "gvfs"
                 "xarchiver"
+                "lightdm"
+                "lightdm-gtk-greeter"
             )
             break
             ;;
         "Deepin")
             desktop_env="deepin"
+            display_manager_service="lightdm"
             packages=(
                 "deepin"
                 "deepin-terminal"
@@ -47,7 +58,8 @@ select opt in "${options[@]}"; do
             break
             ;;
         "Hyperland")
-            desktop_env="hyperland"
+            desktop_env="hyprland"
+            display_manager_service=""
             packages=(
                 "hyprland"
                 "dunst"
